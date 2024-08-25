@@ -30,18 +30,18 @@ func NewFetcher(ctx context.Context, getenv func(string) string) (Fetcher, error
 			return v, nil
 		}
 
-		smPath := fmt.Sprintf("SM_%s", key)
-		v := getenv(fmt.Sprintf("SM_%s", key))
-		if v == "" {
-			return "", fmt.Errorf("can't fetch secret, both %q and %q not found in environment", key, smPath)
+		smKey := fmt.Sprintf("SM_%s", key)
+		smPath := getenv(fmt.Sprintf("SM_%s", key))
+		if smPath == "" {
+			return "", fmt.Errorf("can't fetch secret, both %q and %q not found in environment", key, smKey)
 		}
 		ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 		defer cancel()
 		out, err := sm.GetSecretValue(ctx, &secretsmanager.GetSecretValueInput{
-			SecretId: &v,
+			SecretId: &smPath,
 		})
 		if err != nil {
-			return "", fmt.Errorf("failed to get secret %q: %w", key, err)
+			return "", fmt.Errorf("failed to get secret %q: %w", smPath, err)
 		}
 		return *out.SecretString, nil
 	}, nil
