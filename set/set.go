@@ -28,7 +28,7 @@ func FromKeys[K comparable, V any](m map[K]V) Set[K] {
 	return s
 }
 
-func FromList[T comparable](l []T) Set[T] {
+func FromSlice[T comparable](l []T) Set[T] {
 	s := make(Set[T], len(l))
 	for _, v := range l {
 		s[v] = struct{}{}
@@ -88,6 +88,14 @@ func (s Set[T]) Difference(o Set[T]) Set[T] {
 		}
 	}
 	return result
+}
+
+func (s Set[T]) ToSlice() []T {
+	l := make([]T, 0, len(s))
+	for v := range s {
+		l = append(l, v)
+	}
+	return l
 }
 
 func (s *Set[T]) UnmarshalJSON(b []byte) error {
