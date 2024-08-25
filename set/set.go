@@ -80,6 +80,16 @@ func (s Set[T]) Intersection(o Set[T]) Set[T] {
 	return result
 }
 
+func (s Set[T]) Difference(o Set[T]) Set[T] {
+	result := New[T]()
+	for v := range s {
+		if !o.Contains(v) {
+			result.Add(v)
+		}
+	}
+	return result
+}
+
 func (s *Set[T]) UnmarshalJSON(b []byte) error {
 	var vals []T
 	if err := json.Unmarshal(b, &vals); err != nil {
